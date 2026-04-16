@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Instructions | kmcuts</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body { background: #0f1015; color: #fff; min-height: 100vh; }
+        .navbar {
+            position: sticky; top: 0; z-index: 10;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.85rem 1rem; background: rgba(15, 16, 21, 0.95);
+            border-bottom: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+        }
+        .brand-text { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; letter-spacing: 1px; }
+        .white-text { color: #fff; } .pink-text { color: #ff53c7; }
+        .container { max-width: 980px; margin: 0 auto; padding: 1rem; }
+        h1 { text-align: center; margin: 1.2rem 0; font-size: 1.8rem; font-family: 'Orbitron', sans-serif; }
+        .subtitle { text-align: center; color: rgba(255,255,255,0.75); margin-bottom: 1.1rem; }
+        .payment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        .payment-card {
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 1rem;
+            background: rgba(255,255,255,0.03);
+        }
+        .payment-card h2 {
+            margin-bottom: 0.9rem; display: flex; align-items: center; gap: 0.45rem;
+            color: #7ec8ff; font-size: 1.06rem;
+        }
+        .detail-row {
+            display: grid; grid-template-columns: 120px 1fr auto; align-items: center;
+            gap: 0.6rem; padding: 0.65rem; border-radius: 10px; margin-bottom: 0.45rem;
+            background: rgba(255,255,255,0.04);
+        }
+        .detail-label { color: #d3d8ff; font-size: 0.84rem; }
+        .detail-value { font-weight: 600; word-break: break-word; }
+        .copy-button {
+            border: 1px solid rgba(255,255,255,0.2); color: #fff;
+            background: rgba(255,255,255,0.08); border-radius: 8px; padding: 0.4rem 0.65rem;
+            font-size: 0.78rem;
+        }
+        .cash-instructions {
+            color: rgba(255,255,255,0.88); line-height: 1.55; font-size: 0.95rem;
+        }
+        .cash-list { margin-top: 0.8rem; display: grid; gap: 0.5rem; }
+        .cash-list li {
+            list-style: none; padding: 0.65rem; border-radius: 9px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08);
+        }
+        .back-row { text-align: center; margin: 1rem 0 0.4rem; }
+        .back-button {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            text-decoration: none; color: #fff; border-radius: 9px; padding: 0.62rem 0.95rem;
+            border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.06);
+        }
+        .success-message {
+            position: fixed; right: 1rem; bottom: 1rem; z-index: 40;
+            display: none; background: #1759b7; padding: 0.7rem 0.9rem; border-radius: 8px;
+        }
+        @media (max-width: 780px) {
+            h1 { font-size: 1.45rem; }
+            .payment-grid { grid-template-columns: 1fr; }
+            .detail-row { grid-template-columns: 1fr; }
+            .copy-button { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand-text">
+            <span class="white-text">km</span><span class="pink-text">cuts</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1>Payment Methods</h1>
+        <p class="subtitle">Pay via PayID before your appointment or pay cash on arrival.</p>
+
+        <div class="payment-grid">
+            <section class="payment-card">
+                <h2><i class="fas fa-mobile-alt"></i> PayID</h2>
+                <div class="detail-row">
+                    <span class="detail-label">PayID Number</span>
+                    <span class="detail-value">0485567444</span>
+                    <button class="copy-button" onclick="copyToClipboard('0485567444')"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Reference</span>
+                    <span class="detail-value">Use your name + booking time</span>
+                    <button class="copy-button" onclick="copyToClipboard('Name + booking time')"><i class="fas fa-copy"></i> Copy</button>
+                </div>
+            </section>
+
+            <section class="payment-card">
+                <h2><i class="fas fa-money-bill-wave"></i> Cash Payment</h2>
+                <div class="cash-instructions">
+                    Cash is accepted at your appointment. Bringing the exact amount helps speed up checkout.
+                </div>
+                <ul class="cash-list">
+                    <li>Haircut: $10.00</li>
+                    <li>Haircut + Design: $10.00</li>
+                </ul>
+            </section>
+        </div>
+
+        <div class="back-row">
+            <a href="/" class="back-button"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </div>
+
+    <div id="successMessage" class="success-message"><i class="fas fa-check"></i> Copied to clipboard</div>
+
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const message = document.getElementById('successMessage');
+                message.style.display = 'block';
+                setTimeout(() => { message.style.display = 'none'; }, 1600);
+            });
+        }
+    </script>
+</body>
+</html>

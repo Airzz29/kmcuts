@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>kmcuts Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/modal.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <link rel="manifest" href="/manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="kmcuts">
+    <link rel="apple-touch-icon" href="/images/icon-192x192.png">
+    <meta name="theme-color" content="#121212">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="brand-text">
+                <span class="white-text">km</span>
+                <span class="pink-text">cuts</span>
+            </span>
+        </div>
+        
+        <div class="navbar-end">
+            <a href="/payment" class="payment-nav-button">PAYMENT</a>
+
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="brand-header">
+                <h1>kmcuts</h1>
+            </div>
+            <p class="welcome-text">Premium Cuts, Exceptional Service</p>
+            
+            <div class="social-links">
+                <a href="https://www.instagram.com/kobe_.m11/ class="social-icon instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+                        <linearGradient id="instagram-gradient" x1="0%" y1="100%" x2="100%" y2="0%">
+                            <stop offset="0%" style="stop-color:#ffd600"/>
+                            <stop offset="50%" style="stop-color:#ff0069"/>
+                            <stop offset="100%" style="stop-color:#7638fa"/>
+                        </linearGradient>
+                        <path fill="url(#instagram-gradient)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                    </svg>
+                </a>
+                <a href="https://www.tiktok.com/@kmcuts__?lang=en-GB" class="social-icon tiktok">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24">
+                        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" fill="#fff"/>
+                        <path d="M15.82 8.67v7a6.34 6.34 0 0 1-10.86 4.43 6.33 6.33 0 0 1 5.36-10.75 6.84 6.84 0 0 1 1 .05v3.5a2.93 2.93 0 0 0-.88-.13 2.89 2.89 0 0 0-2.31 4.64 2.89 2.89 0 0 0 5.2-1.74V2h3.45v.44a4.83 4.83 0 0 0 3.77 4.25 4.85 4.85 0 0 0 1 .1v3.4a8.16 8.16 0 0 1-4.77-1.52" fill="#00f2ea"/>
+                        <path d="M15.82 8.67v7a6.34 6.34 0 0 1-10.86 4.43 6.33 6.33 0 0 1 5.36-10.75 6.84 6.84 0 0 1 1 .05v3.5a2.93 2.93 0 0 0-.88-.13 2.89 2.89 0 0 0-2.31 4.64 2.89 2.89 0 0 0 5.2-1.74V2h3.45v.44a4.83 4.83 0 0 0 3.77 4.25 4.85 4.85 0 0 0 1 .1" fill="#ff004f"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="main-content-left">
+            <!-- Services Section -->
+            <div class="section services">
+                <h2 class="section-title">My Services</h2>
+                <div class="services-table">
+                    <div class="service-row">
+                        <div class="service-name">Haircut</div>
+                        <div class="service-price">$10.00</div>
+                        <div class="service-duration">30min</div>
+                        <div class="service-book">
+                            <button class="book-button" 
+                                    data-service="Haircut" 
+                                    data-duration="30"
+                                    type="button">Book</button>
+                        </div>
+                    </div>
+                    <div class="service-row">
+                        <div class="service-name">Haircut + Design</div>
+                        <div class="service-price">$10.00</div>
+                        <div class="service-duration">30min</div>
+                        <div class="service-book">
+                            <button class="book-button" 
+                                    data-service="Haircut + Design" 
+                                    data-duration="30"
+                                    type="button">Book</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Our Work Section -->
+            <div class="section work-section">
+                <h2 class="section-title">My Work</h2>
+                <div class="work-carousel">
+                    <button class="carousel-arrow left">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="carousel-container">
+                        <div class="carousel-slide">
+                            <img src="img/cut1.jpeg" alt="Haircut Style 1">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="img/cut2.jpeg" alt="Haircut Style 2">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="img/cut3.jpeg" alt="Haircut Style 3">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="img/cut4.jpeg" alt="Haircut Style 4">
+                        </div>
+                        <div class="carousel-slide">
+                            <img src="img/cut5.jpeg" alt="Haircut Style 5">
+                        </div>
+                    </div>
+
+                    <button class="carousel-arrow right">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+
+                    <!-- Add the slider indicators -->
+                    <div class="carousel-indicators">
+                        <span class="indicator active"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                        <span class="indicator"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content-right">
+            <div class="section info-section">
+                <h2 class="section-title">Business Hours</h2>
+                <div class="business-hours">
+                    <% Object.entries(schedule).forEach(([day, { isOpen, hours }]) => { %>
+                        <div class="hour-row">
+                            <span class="day"><%= day %></span>
+                            <span class="time">
+                                <% if (isOpen) { %>
+                                    <%= hours.start %> - <%= hours.end %>
+                                <% } else { %>
+                                    Closed
+                                <% } %>
+                            </span>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <div class="contact-info">
+                    <h2 class="section-title">Contact</h2>
+                    <div class="info-row">
+                        <i class="fas fa-phone"></i>
+                        <span>0485567444</span>
+                    </div>
+                    <div class="info-row">
+                        <i class="fas fa-location-dot"></i>
+                        <span>67 Lakey St, Southern River WA 6110</span>
+                    </div>
+                    <div class="info-note">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Knock on door or text.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div>
+                <div class="footer-brand">kmcuts</div>
+                <div class="footer-domains">| kobe.m</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Book Appointment</h2>
+                <button class="close-modal" onclick="closeBookingModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Date Selection -->
+                <div id="dateSelection" class="booking-step">
+                    <div class="calendar-container">
+                        <div class="calendar-header">
+                            <button class="calendar-nav prev" onclick="changeMonth(-1)">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <h3 class="current-month"></h3>
+                            <button class="calendar-nav next" onclick="changeMonth(1)">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                        <!-- Adding weekday headers -->
+                        <div class="calendar-weekdays">
+                            <div class="weekday">Sun</div>
+                            <div class="weekday">Mon</div>
+                            <div class="weekday">Tue</div>
+                            <div class="weekday">Wed</div>
+                            <div class="weekday">Thu</div>
+                            <div class="weekday">Fri</div>
+                            <div class="weekday">Sat</div>
+                        </div>
+                        <div id="bookingCalendar"></div>
+                    </div>
+                </div>
+
+                <!-- Time Slot Selection -->
+                <div id="slotSelection" class="booking-step" style="display: none;">
+                    <div id="slotsContainer" class="slots-container"></div>
+                </div>
+
+                <!-- Booking Form -->
+                <div id="bookingForm" class="booking-step" style="display: none;">
+                    <div class="booking-form">
+                        <div class="form-group">
+                            <label for="customerName">Name</label>
+                            <input type="text" id="customerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="customerPhone">Phone</label>
+                            <input type="tel" id="customerPhone" required>
+                        </div>
+                        <button class="submit-button" onclick="submitBooking()">Confirm Booking</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pass the schedule data to the client
+        window.serverSchedule = <%- JSON.stringify(schedule) %>;
+    </script>
+    <script src="/js/script.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/booking.js"></script>
+    <script>
+        // Remove socket initialization and just add the event listener
+        socket.on('bookingUpdated', (data) => {
+            if (data.date === selectedDate) {
+                loadTimeSlots(selectedDate);
+            }
+        });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // Handle offline/online status
+        window.addEventListener('online', function() {
+            document.body.classList.remove('offline');
+            // Reload the page to get fresh content
+            window.location.reload();
+        });
+
+        window.addEventListener('offline', function() {
+            document.body.classList.add('offline');
+            // Show offline notification
+            if (!document.querySelector('.offline-alert')) {
+                const alert = document.createElement('div');
+                alert.className = 'offline-alert';
+                alert.innerHTML = 'You are currently offline. Some features may be unavailable.';
+                document.body.appendChild(alert);
+            }
+        });
+    </script>
+</body>
+</html> 

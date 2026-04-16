@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>kmcuts Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <audio id="notificationSound" src="/sounds/notification.mp3" preload="auto"></audio>
+    <!-- Enhanced PWA meta tags -->
+    <link rel="manifest" href="/admin-manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="kmcuts Admin">
+    <link rel="apple-touch-icon" href="/images/admin-icon-192x192.png">
+    <meta name="theme-color" content="#121212">
+    <style>
+        @supports (padding: max(0px)) {
+            .admin-container {
+                padding-top: max(1rem, env(safe-area-inset-top));
+                padding-bottom: max(1rem, env(safe-area-inset-bottom));
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+            }
+            
+            .navbar {
+                padding-top: env(safe-area-inset-top);
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <span class="brand-text">
+                <span class="white-text">km</span>
+                <span class="pink-text">cuts</span>
+            </span>
+        </div>
+        <div class="navbar-end">
+            <a href="/" class="nav-button home-button">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <button onclick="logout()" class="nav-button logout-button">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+    </nav>
+
+    <div class="admin-container">
+        <div class="admin-sidebar">
+            <button class="tab-button active" onclick="showTab('schedule')">
+                <i class="fas fa-calendar-alt"></i> Schedule
+            </button>
+            <button class="tab-button" onclick="showTab('bookings')">
+                <i class="fas fa-calendar-check"></i> Bookings
+            </button>
+        </div>
+
+        <div class="admin-content">
+            <div id="schedule-tab" class="tab-content active">
+                <h2>Business Hours</h2>
+                <div class="schedule-manager">
+                    <% Object.entries(schedule).forEach(([day, { isOpen, hours }]) => { %>
+                        <div class="day-row">
+                            <div class="day-toggle">
+                                <label class="switch">
+                                    <input type="checkbox" 
+                                           <%= isOpen ? 'checked' : '' %>
+                                           onchange="toggleDay('<%= day %>')">
+                                    <span class="slider"></span>
+                                </label>
+                                <span class="day-name"><%= day %></span>
+                            </div>
+                            <div class="hours-input <%= isOpen ? 'active' : '' %>">
+                                <div class="time-range">
+                                    <div class="time-input">
+                                        <input type="text" 
+                                               class="time-picker start-time"
+                                               data-day="<%= day %>"
+                                               pattern="([1-9]|1[0-2]):[0-5][0-9]"
+                                               placeholder="3:30"
+                                               value="<%= hours.start ? hours.start.split(' ')[0] : '' %>">
+                                        <select class="meridian-select start-meridian"
+                                                onchange="updateHours('<%= day %>')">
+                                            <option value="AM" <%= hours.start && hours.start.includes('AM') ? 'selected' : '' %>>AM</option>
+                                            <option value="PM" <%= hours.start && hours.start.includes('PM') ? 'selected' : '' %>>PM</option>
+                                        </select>
+                                    </div>
+                                    <span class="time-separator">to</span>
+                                    <div class="time-input">
+                                        <input type="text" 
+                                               class="time-picker end-time"
+                                               data-day="<%= day %>"
+                                               pattern="([1-9]|1[0-2]):[0-5][0-9]"
+                                               placeholder="8:00"
+                                               value="<%= hours.end ? hours.end.split(' ')[0] : '' %>">
+                                        <select class="meridian-select end-meridian"
+                                                onchange="updateHours('<%= day %>')">
+                                            <option value="AM" <%= hours.end && hours.end.includes('AM') ? 'selected' : '' %>>AM</option>
+                                            <option value="PM" <%= hours.end && hours.end.includes('PM') ? 'selected' : '' %>>PM</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                    <button onclick="saveSchedule()" class="save-button">Save Changes</button>
+                </div>
+            </div>
+
+            <div id="bookings-tab" class="tab-content">
+                <div class="booking-filters">
+                    <button class="booking-filter active" data-status="pending" onclick="filterBookings('pending')">
+                        Pending Bookings
+                        <span class="booking-count" id="pending-count">0</span>
+                    </button>
+                    <button class="booking-filter" data-status="accepted" onclick="filterBookings('accepted')">
+                        Accepted Bookings
+                        <span class="booking-count" id="accepted-count">0</span>
+                    </button>
+                    <button class="booking-filter" data-status="declined" onclick="filterBookings('declined')">
+                        Declined Bookings
+                        <span class="booking-count" id="declined-count">0</span>
+                    </button>
+                    <button class="booking-filter" data-status="finished" onclick="filterBookings('finished')">
+                        Finished Cuts
+                        <span class="booking-count" id="finished-count">0</span>
+                    </button>
+                </div>
+                <div class="bookings-toolbar">
+                    <div class="toolbar-field">
+                        <label for="bookingDateFilter">Date</label>
+                        <input type="date" id="bookingDateFilter" class="toolbar-input">
+                    </div>
+                    <div class="toolbar-field">
+                        <label for="bookingSort">Sort</label>
+                        <select id="bookingSort" class="toolbar-input">
+                            <option value="asc">Oldest first</option>
+                            <option value="desc" selected>Newest first</option>
+                        </select>
+                    </div>
+                    <button type="button" class="toolbar-clear-button" onclick="clearBookingFilters()">
+                        Clear Filters
+                    </button>
+                </div>
+                <div class="bookings-summary" id="bookingsSummary">Loading bookings...</div>
+                <div class="search-container" style="display: none;">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" 
+                               placeholder="Search by name..." 
+                               onkeyup="handleSearch(event)"
+                               class="search-input">
+                    </div>
+                </div>
+                <div class="bookings-list">
+                    <!-- Bookings will be populated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent pull-to-refresh
+        document.body.style.overscrollBehavior = 'none';
+        
+        // Enhanced offline detection
+        window.addEventListener('online', function() {
+            document.body.classList.remove('offline');
+            const offlineAlert = document.querySelector('.offline-alert');
+            if (offlineAlert) offlineAlert.remove();
+        });
+
+        window.addEventListener('offline', function() {
+            document.body.classList.add('offline');
+            showOfflineAlert();
+        });
+
+        function showOfflineAlert() {
+            if (!document.querySelector('.offline-alert')) {
+                const alert = document.createElement('div');
+                alert.className = 'offline-alert';
+                alert.innerHTML = `
+                    <i class="fas fa-wifi-slash"></i>
+                    <span>You are offline</span>
+                `;
+                document.body.appendChild(alert);
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/admin-sw.js')
+                    .catch((err) => console.log('Admin SW registration failed:', err));
+            });
+        }
+    </script>
+
+    <script>
+        // Force standalone mode behavior
+        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (link && link.href) {
+                    e.preventDefault();
+                    window.location.href = link.href;
+                }
+            });
+        }
+    
+        // Add PWA header to requests
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['app-mode'] = 'pwa';
+            return originalFetch(url, options);
+        };
+    </script>
+</body>
+</html> 

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found | kmcuts</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            background: #1a1a1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+        }
+
+        h1 {
+            font-size: 8em;
+            margin: 0;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 2px 2px 10px rgba(255, 107, 107, 0.2);
+        }
+
+        h2 {
+            font-size: 2em;
+            margin: 0;
+            margin-bottom: 20px;
+            color: #ff6b6b;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            color: #ccc;
+            margin-bottom: 30px;
+        }
+
+        .back-button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .scissors {
+            font-size: 4em;
+            margin: 20px 0;
+            animation: cut 2s infinite;
+        }
+
+        @keyframes cut {
+            0% { transform: rotate(0deg); }
+            50% { transform: rotate(-20deg); }
+            100% { transform: rotate(0deg); }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 6em; }
+            h2 { font-size: 1.5em; }
+            p { font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>404</h1>
+        <div class="scissors">✂️</div>
+        <h2>Oops! Page Not Found</h2>
+        <p>Looks like we couldn't find what you're looking for. The page might have been moved, deleted, or never existed.</p>
+        <a href="/" class="back-button">Back to Home</a>
+    </div>
+</body>
+</html> 
