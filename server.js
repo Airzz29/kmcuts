@@ -16,7 +16,7 @@ const TZ = 'Australia/Perth';
 const DB_PATH = path.join(__dirname, 'bookings.db');
 const PORT = Number(process.env.PORT || 3000);
 const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'Admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'ayaan';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'kmcuts$$';
 
 const sessionSecret =
     process.env.SESSION_SECRET ||
