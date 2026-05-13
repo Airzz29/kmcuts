@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>kmcuts Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/login.css" rel="stylesheet">
+    <!-- Enhanced PWA meta tags -->
+    <link rel="manifest" href="/admin-manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="kmcuts Admin">
+    <link rel="apple-touch-icon" href="/images/admin-icon-192x192.png">
+    <meta name="theme-color" content="#121212">
+    <!-- iOS specific -->
+    <meta name="apple-touch-fullscreen" content="yes">
+    <link rel="apple-touch-startup-image" href="/images/admin-splash.png">
+    <!-- PWA splash screens -->
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)" href="/images/splash/iPhone_14_Pro_Max_landscape.png">
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)" href="/images/splash/iPhone_14_Pro_landscape.png">
+    <style>
+        @supports (padding: max(0px)) {
+            .login-container {
+                padding-top: max(2rem, env(safe-area-inset-top));
+                padding-bottom: max(2rem, env(safe-area-inset-bottom));
+                padding-left: max(2rem, env(safe-area-inset-left));
+                padding-right: max(2rem, env(safe-area-inset-right));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="brand-text">
+                <span class="white-text">km</span>
+                <span class="pink-text">cuts</span>
+            </div>
+            <h2>Admin Login</h2>
+            <form id="loginForm" onsubmit="return handleLogin(event)">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Username" 
+                           required autocomplete="username"
+                           enterkeyhint="next">
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Password" 
+                           required autocomplete="current-password"
+                           enterkeyhint="go">
+                </div>
+                <button type="submit" class="login-button">
+                    <span>Login</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+            <div id="error-message" class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // Prevent pull-to-refresh
+        document.body.style.overscrollBehavior = 'none';
+        
+        // PWA installation prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        // Service worker registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/admin-sw.js')
+                    .then(registration => {
+                        console.log('Admin ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('Admin ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+
+        // Enhanced offline handling
+        window.addEventListener('online', function() {
+            document.body.classList.remove('offline');
+            const offlineAlert = document.querySelector('.offline-alert');
+            if (offlineAlert) offlineAlert.remove();
+        });
+
+        window.addEventListener('offline', function() {
+            document.body.classList.add('offline');
+            showOfflineAlert();
+        });
+
+        function showOfflineAlert() {
+            if (!document.querySelector('.offline-alert')) {
+                const alert = document.createElement('div');
+                alert.className = 'offline-alert';
+                alert.innerHTML = `
+                    <i class="fas fa-wifi-slash"></i>
+                    <span>You are offline</span>
+                `;
+                document.body.appendChild(alert);
+            }
+        }
+    </script>
+    <script src="/js/login.js"></script>
+</body>
+</html> 

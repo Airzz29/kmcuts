@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>kmcuts Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="/css/styles.css" rel="stylesheet">
+    <link href="/css/admin.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.34/moment-timezone-with-data.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <audio id="notificationSound" src="/sounds/notification.mp3" preload="auto"></audio>
+    <!-- Enhanced PWA meta tags -->
+    <link rel="manifest" href="/admin-manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="kmcuts Admin">
+    <link rel="apple-touch-icon" href="/images/admin-icon-192x192.png">
+    <meta name="theme-color" content="#121212">
+    <style>
+        @supports (padding: max(0px)) {
+            .admin-main {
+                padding-top: max(20px, env(safe-area-inset-top));
+                padding-bottom: max(20px, env(safe-area-inset-bottom));
+                padding-left: max(16px, env(safe-area-inset-left));
+                padding-right: max(16px, env(safe-area-inset-right));
+            }
+
+            .navbar {
+                padding-top: env(safe-area-inset-top);
+                padding-left: env(safe-area-inset-left);
+                padding-right: env(safe-area-inset-right);
+            }
+        }
+    </style>
+</head>
+<body class="admin-body">
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <div class="navbar-brand">
+                <span class="brand-text">km<span style="color:var(--accent)">cuts</span></span>
+            </div>
+            <div class="navbar-end">
+                <a href="/" class="nav-button nav-button-home">
+                    <i class="fas fa-home"></i> <span class="nav-btn-text">Home</span>
+                </a>
+                <button type="button" onclick="logout()" class="nav-button nav-button-logout">
+                    <i class="fas fa-sign-out-alt"></i> <span class="nav-btn-text">Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <div class="admin-tab-bar">
+            <button type="button" class="admin-tab active" data-tab="bookings" onclick="switchTab('bookings')">
+                <i class="fas fa-calendar-check"></i> Bookings
+            </button>
+            <button type="button" class="admin-tab" data-tab="settings" onclick="switchTab('settings')">
+                <i class="fas fa-cog"></i> Settings
+            </button>
+        </div>
+
+        <div id="tab-bookings" class="admin-tab-content active">
+            <section class="admin-section admin-section-analytics" aria-label="Analytics">
+                <div class="admin-section-label">Analytics</div>
+                <div class="analytics-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap stat-icon-accent"><i class="fas fa-calendar-week"></i></div>
+                        <div class="stat-value" id="stat-this-week">0</div>
+                        <div class="stat-label">This Week</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap stat-icon-green"><i class="fas fa-calendar-alt"></i></div>
+                        <div class="stat-value" id="stat-this-month">0</div>
+                        <div class="stat-label">This Month</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap stat-icon-amber"><i class="fas fa-dollar-sign"></i></div>
+                        <div class="stat-value" id="stat-revenue">$0</div>
+                        <div class="stat-label">Est. Revenue</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon-wrap stat-icon-cyan"><i class="fas fa-percent"></i></div>
+                        <div class="stat-value" id="stat-completion">0%</div>
+                        <div class="stat-label">Completion</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" aria-label="Bookings">
+                <div class="admin-section-label">Bookings</div>
+                <div class="bookings-panel">
+                    <div class="booking-filters">
+                        <button type="button" class="booking-filter active" data-status="pending" onclick="filterBookings('pending')">
+                            Pending Bookings
+                            <span class="booking-count" id="pending-count">0</span>
+                        </button>
+                        <button type="button" class="booking-filter" data-status="accepted" onclick="filterBookings('accepted')">
+                            Accepted Bookings
+                            <span class="booking-count" id="accepted-count">0</span>
+                        </button>
+                        <button type="button" class="booking-filter" data-status="declined" onclick="filterBookings('declined')">
+                            Declined Bookings
+                            <span class="booking-count" id="declined-count">0</span>
+                        </button>
+                        <button type="button" class="booking-filter" data-status="finished" onclick="filterBookings('finished')">
+                            Finished Cuts
+                            <span class="booking-count" id="finished-count">0</span>
+                        </button>
+                    </div>
+                    <div class="bookings-toolbar">
+                        <div class="toolbar-row-datesort">
+                            <div class="toolbar-field">
+                                <label for="bookingDateFilter">Date</label>
+                                <input type="date" id="bookingDateFilter" class="toolbar-input">
+                            </div>
+                            <div class="toolbar-field">
+                                <label for="bookingSort">Sort</label>
+                                <select id="bookingSort" class="toolbar-input">
+                                    <option value="asc">Oldest first</option>
+                                    <option value="desc" selected>Newest first</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button type="button" class="toolbar-clear-button" onclick="clearBookingFilters()">
+                            Clear Filters
+                        </button>
+                    </div>
+                    <div class="bookings-summary" id="bookingsSummary">Loading bookings...</div>
+                    <div class="search-container" style="display: none;">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text"
+                                   placeholder="Search by name..."
+                                   onkeyup="handleSearch(event)"
+                                   class="search-input">
+                        </div>
+                    </div>
+                    <div class="bookings-list">
+                        <!-- Bookings will be populated here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-settings" class="admin-tab-content">
+            <section class="admin-section" aria-label="Schedule">
+                <div class="admin-section-label">Schedule</div>
+                <div id="schedule-tab" class="schedule-panel">
+                    <div class="schedule-manager">
+                        <% Object.entries(schedule).forEach(([day, { isOpen, hours }]) => { %>
+                            <div class="day-row">
+                                <div class="day-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox"
+                                               <%= isOpen ? 'checked' : '' %>
+                                               onchange="toggleDay('<%= day %>')">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span class="day-name"><%= day %></span>
+                                </div>
+                                <div class="hours-input <%= isOpen ? 'active' : '' %>">
+                                    <div class="time-range">
+                                        <div class="time-input">
+                                            <input type="text"
+                                                   class="time-picker start-time"
+                                                   data-day="<%= day %>"
+                                                   pattern="([1-9]|1[0-2]):[0-5][0-9]"
+                                                   placeholder="3:30"
+                                                   value="<%= hours.start ? hours.start.split(' ')[0] : '' %>">
+                                            <select class="meridian-select start-meridian"
+                                                    onchange="updateHours('<%= day %>')">
+                                                <option value="AM" <%= hours.start && hours.start.includes('AM') ? 'selected' : '' %>>AM</option>
+                                                <option value="PM" <%= hours.start && hours.start.includes('PM') ? 'selected' : '' %>>PM</option>
+                                            </select>
+                                        </div>
+                                        <span class="time-separator">to</span>
+                                        <div class="time-input">
+                                            <input type="text"
+                                                   class="time-picker end-time"
+                                                   data-day="<%= day %>"
+                                                   pattern="([1-9]|1[0-2]):[0-5][0-9]"
+                                                   placeholder="8:00"
+                                                   value="<%= hours.end ? hours.end.split(' ')[0] : '' %>">
+                                            <select class="meridian-select end-meridian"
+                                                    onchange="updateHours('<%= day %>')">
+                                                <option value="AM" <%= hours.end && hours.end.includes('AM') ? 'selected' : '' %>>AM</option>
+                                                <option value="PM" <%= hours.end && hours.end.includes('PM') ? 'selected' : '' %>>PM</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                        <button type="button" onclick="saveSchedule()" class="save-button save-button-schedule">Save Changes</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-section" aria-label="Blocked dates">
+                <div class="admin-section-label">Blocked dates</div>
+                <div class="settings-card">
+                    <div class="blocked-add-row">
+                        <input type="date" id="blockDateInput" class="setting-input">
+                        <input type="text" id="blockReasonInput" class="setting-input"
+                               placeholder="Reason (optional)">
+                        <button type="button" onclick="addBlockedDate()" class="setting-save-btn">Block</button>
+                    </div>
+                    <div id="blockedDatesList"></div>
+                </div>
+            </section>
+
+            <section class="admin-section" aria-label="Services">
+                <div class="admin-section-label">Services</div>
+                <div class="settings-card">
+                    <div class="services-add-row">
+                        <input type="text" id="newServiceName" class="setting-input" placeholder="Service name">
+                        <input type="number" id="newServicePrice" class="setting-input" placeholder="Price ($)" min="0" step="0.01">
+                        <input type="number" id="newServiceDuration" class="setting-input" placeholder="Duration (min)" min="1">
+                        <button type="button" onclick="addService()" class="setting-save-btn">Add</button>
+                    </div>
+                    <div id="servicesList"></div>
+                </div>
+            </section>
+
+            <section class="admin-section" aria-label="Notifications">
+                <div class="admin-section-label">Notifications</div>
+                <div class="settings-card">
+                    <div class="settings-card-inner">
+                        <div class="settings-copy">
+                            <div class="settings-title">Notification email</div>
+                            <p class="settings-hint">Email address for new booking alerts. If empty, <code>ADMIN_EMAIL</code> from the server environment is used.</p>
+                        </div>
+                        <div class="settings-controls">
+                            <label class="visually-hidden" for="notificationEmailInput">Alert email</label>
+                            <input type="email" id="notificationEmailInput" class="toolbar-input settings-email-input" placeholder="you@example.com">
+                            <div class="settings-actions-row">
+                                <button type="button" class="save-button save-button-settings" onclick="saveNotificationEmail()">Save</button>
+                                <span id="emailSavedMsg" class="email-saved-msg" aria-live="polite">Saved ✓</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        document.body.style.overscrollBehavior = 'none';
+
+        window.addEventListener('online', function() {
+            document.body.classList.remove('offline');
+            const offlineAlert = document.querySelector('.offline-alert');
+            if (offlineAlert) offlineAlert.remove();
+        });
+
+        window.addEventListener('offline', function() {
+            document.body.classList.add('offline');
+            showOfflineAlert();
+        });
+
+        function showOfflineAlert() {
+            if (!document.querySelector('.offline-alert')) {
+                const alert = document.createElement('div');
+                alert.className = 'offline-alert';
+                alert.innerHTML = `
+                    <i class="fas fa-wifi-slash"></i>
+                    <span>You are offline</span>
+                `;
+                document.body.appendChild(alert);
+            }
+        }
+    </script>
+    <script src="/js/admin.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/admin-sw.js')
+                    .catch((err) => console.log('Admin SW registration failed:', err));
+            });
+        }
+    </script>
+
+    <script>
+        if (window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches) {
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a');
+                if (link && link.href) {
+                    e.preventDefault();
+                    window.location.href = link.href;
+                }
+            });
+        }
+
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options = {}) {
+            options.headers = options.headers || {};
+            options.headers['app-mode'] = 'pwa';
+            return originalFetch(url, options);
+        };
+    </script>
+</body>
+</html>

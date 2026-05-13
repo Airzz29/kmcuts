@@ -1,0 +1,11 @@
+# Secrets and local config (never commit)
+.env
+
+# SQLite databases
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Dependencies
+node_modules/
